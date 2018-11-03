@@ -1,9 +1,9 @@
 export default {
+  'menu.leave': '请假',
+  'menu.leave.leaveList': '请假列表',
+
   'navBar.lang': '语言',
   'lang.simplified-chinese': '🇨🇳 简体中文',
-  'lang.traditional-chinese': '🇭🇰 繁体中文',
-  'lang.english': '🇬🇧 English',
-  'lang.portuguese': '🇵🇹 Portuguese',
   'layout.user.link.help': '帮助',
   'layout.user.link.privacy': '隐私',
   'layout.user.link.terms': '条款',
@@ -73,8 +73,6 @@ export default {
   'menu.home': '首页',
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',
-  'menu.dashboard.monitor': '监控页',
-  'menu.dashboard.workplace': '工作台',
   'menu.form': '表单页',
   'menu.form.basicform': '基础表单',
   'menu.form.stepform': '分步表单',

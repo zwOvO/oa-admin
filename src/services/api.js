@@ -1,6 +1,8 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
+const apiUrl = "http://localhost:21019/api/v1";
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
@@ -9,12 +11,12 @@ export async function queryActivities() {
   return request('/api/activities');
 }
 
-export async function queryRule(params) {
-  return request(`/api/rule?${stringify(params)}`);
+export async function queryLeave(params) {
+  return request(`${apiUrl}/leave/list?${stringify(params)}`);
 }
 
-export async function removeRule(params) {
-  return request('/api/rule', {
+export async function removeLeave(params) {
+  return request('/api/leave', {
     method: 'POST',
     body: {
       ...params,
@@ -23,8 +25,8 @@ export async function removeRule(params) {
   });
 }
 
-export async function addRule(params) {
-  return request('/api/rule', {
+export async function addLeave(params) {
+  return request('/api/leave', {
     method: 'POST',
     body: {
       ...params,
@@ -33,8 +35,8 @@ export async function addRule(params) {
   });
 }
 
-export async function updateRule(params) {
-  return request('/api/rule', {
+export async function updateLeave(params) {
+  return request('/api/leave', {
     method: 'POST',
     body: {
       ...params,
