@@ -1,6 +1,8 @@
 export default {
   'menu.leave': '请假',
   'menu.leave.leaveList': '请假列表',
+  'menu.userManager': '用户',
+  'menu.userManager.userManagerList': '用户列表',
 
   'navBar.lang': '语言',
   'lang.simplified-chinese': '🇨🇳 简体中文',

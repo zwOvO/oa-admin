@@ -15,27 +15,21 @@ export async function queryLeave(params) {
   return request(`${apiUrl}/leave/list?${stringify(params)}`);
 }
 
-export async function removeLeave(params) {
-  return request('/api/leave', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
-
-export async function addLeave(params) {
-  return request('/api/leave', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
-
 export async function updateLeave(params) {
+  return request('/api/leave', {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'update',
+    },
+  });
+}
+
+export async function queryUserManager(params) {
+  return request(`${apiUrl}/user/list?${stringify(params)}`);
+}
+
+export async function updateUserManager(params) {
   return request('/api/leave', {
     method: 'POST',
     body: {

@@ -57,6 +57,19 @@ export default [
           },
         ],
       },
+      // userManager
+      {
+        path: '/userManager',
+        icon: 'table',
+        name: 'userManager',
+        routes: [
+          {
+            path: '/userManager/table-list',
+            name: 'userManagerList',
+            component: './UserManager/TableList',
+          },
+        ],
+      },
       {
         name: 'result',
         icon: 'check-circle-o',
