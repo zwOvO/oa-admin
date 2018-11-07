@@ -11,7 +11,6 @@ import {
   Button,
   Modal,
   Badge,
-  Divider,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -26,15 +25,17 @@ const getValue = obj =>
     .join(',');
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['未审批', '通过', '不通过'];
+const leaveType = ['事假','婚假','丧假','产假','年假','调休','病假'];
 
 @Form.create()
 class AuditForm extends PureComponent {
   constructor(props) {
     super(props);
+    console.log(props.values);
 
     this.state = {
       formVals: {
-        target: '0',
+        status: '0',
       },
     };
 
@@ -45,7 +46,7 @@ class AuditForm extends PureComponent {
   }
 
   render() {
-    const { auditModalVisible, handleUpdateModalVisible } = this.props;
+    const { auditModalVisible, handleUpdateModalVisible, handleAudit, values } = this.props;
     const { formVals } = this.state;
     const { form } = this.props;
 
@@ -57,18 +58,44 @@ class AuditForm extends PureComponent {
         title="请假审批"
         visible={auditModalVisible}
         onCancel={() => handleUpdateModalVisible()}
+        onOk={() => handleAudit(values,form)}
       >
-        <FormItem key="target" {...this.formLayout} label="请假审批">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">未审批</Option>
-              <Option value="1">通过</Option>
-              <Option value="2">不通过</Option>
-            </Select>
-          )}
-        </FormItem>,
+        <div>
+          <Row>
+            <Col span={12}>用户标识：</Col>
+            <Col span={12}>{values.openId}</Col>
+          </Row>
+          <Row>
+            <Col span={12}>请假类型：</Col>
+            <Col span={12}>{values.leaveType===0?"事假":
+              (values.leaveType===1?"婚假":
+                (values.leaveType===2?"丧假":
+                  (values.leaveType===3?"产假":
+                    (values.leaveType===4?"年假":
+                      (values.leaveType===5?"调休":"病假"
+                      )))))}
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>请假理由：</Col>
+            <Col span={12}>{values.message}</Col>
+          </Row>
+          <Row>
+            <Col span={12}>请假时间：</Col>
+            <Col span={12}>{moment(values.createTime).format('YYYY-MM-DD HH:mm:ss')}</Col>
+          </Row>
+          <FormItem key="status" {...this.formLayout} label="请假审批">
+            {form.getFieldDecorator('status', {
+              initialValue: formVals.status,
+            })(
+              <Select style={{ width: '100%' }}>
+                <Option value="0">未审批</Option>
+                <Option value="1">通过</Option>
+                <Option value="2">不通过</Option>
+              </Select>
+            )}
+          </FormItem>,
+        </div>
       </Modal>
     );
   }
@@ -85,12 +112,24 @@ class TableList extends PureComponent {
     auditModalVisible: false,
     selectedRows: [],
     formValues: {},
+    stepFormValues: {},
   };
 
   columns = [
     {
       title: '用户标识',
       dataIndex: 'openId',
+    },
+    {
+      title: '请假理由',
+      dataIndex: 'message',
+    },
+    {
+      title: '请假类型',
+      dataIndex: 'leaveType',
+      render(val) {
+        return leaveType[val];
+      },
     },
     // {
     //   title: '服务调用次数',
@@ -104,20 +143,6 @@ class TableList extends PureComponent {
     {
       title: '状态',
       dataIndex: 'status',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-        {
-          text: status[2],
-          value: 2,
-        },
-      ],
       render(val) {
         return <Badge status={statusMap[val]} text={status[val]} />;
       },
@@ -125,14 +150,13 @@ class TableList extends PureComponent {
     {
       title: '请假申请时间',
       dataIndex: 'createTime',
-      sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
-      render: () => (
+      render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true)}>审批</a>
+          <a onClick={() => this.handleUpdateModalVisible(true, record)}>审批</a>
         </Fragment>
       ),
     },
@@ -226,9 +250,33 @@ class TableList extends PureComponent {
     });
   };
 
-  handleUpdateModalVisible = (flag) => {
+  handleUpdateModalVisible = (flag, record) => {
     this.setState({
       auditModalVisible: !!flag,
+      stepFormValues: record || {},
+    });
+  };
+
+  handleAudit = (rowData,form) => {
+    const { dispatch } = this.props;
+    const that = this;
+    form.validateFields((err, values) => {
+      if (!err) {
+        console.log(rowData.id);
+        console.log(values.status);
+        dispatch({
+          type: 'leave/update',
+          payload: {
+            id:rowData.id,
+            status:values.status,
+          },
+          callback:()=>{
+            that.setState({
+              auditModalVisible:false,
+            });
+          }
+        });
+      }
     });
   };
 
@@ -238,7 +286,7 @@ class TableList extends PureComponent {
       loading,
     } = this.props;
 
-    const { selectedRows, auditModalVisible } = this.state;
+    const { selectedRows, auditModalVisible, stepFormValues } = this.state;
 
     return (
       <PageHeaderWrapper title="请假列表">
@@ -248,6 +296,7 @@ class TableList extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey="id"
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
@@ -255,10 +304,14 @@ class TableList extends PureComponent {
           </div>
         </Card>
         {
-          <AuditForm
-            handleUpdateModalVisible={this.handleUpdateModalVisible}
-            auditModalVisible={auditModalVisible}
-          />
+          stepFormValues && Object.keys(stepFormValues).length ? (
+            <AuditForm
+              handleUpdateModalVisible={this.handleUpdateModalVisible}
+              handleAudit={this.handleAudit}
+              auditModalVisible={auditModalVisible}
+              values={stepFormValues}
+            />
+          ) : null
         }
 
       </PageHeaderWrapper>

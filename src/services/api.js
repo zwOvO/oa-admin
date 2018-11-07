@@ -16,11 +16,12 @@ export async function queryLeave(params) {
 }
 
 export async function updateLeave(params) {
-  return request('/api/leave', {
-    method: 'POST',
+  console.log("params:");
+  console.log(params);
+  return request(`${apiUrl}/leave/audit`, {
+    method: 'PUT',
     body: {
       ...params,
-      method: 'update',
     },
   });
 }

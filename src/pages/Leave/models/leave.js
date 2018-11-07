@@ -35,9 +35,10 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateLeave, payload);
+      yield call(updateLeave, payload);
+      const response = yield call(queryLeave, {});
       yield put({
-        type: 'save',
+        type: 'queryLeaveReduce',
         payload: response,
       });
       if (callback) callback();
