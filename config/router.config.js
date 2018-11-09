@@ -17,33 +17,33 @@ export default [
     Routes: ['src/pages/Authorized'],
     authority: ['admin', 'user'],
     routes: [
-      // dashboard
-      { path: '/', redirect: '/dashboard/analysis' },
+      // record
+      { path: '/', redirect: '/record/table-list' },
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        icon: 'dashboard',
+        path: '/record',
+        icon: 'table',
+        name: 'record',
         routes: [
           {
-            path: '/dashboard/analysis',
-            name: 'analysis',
-            component: './Dashboard/Analysis',
+            path: '/record/table-list',
+            name: 'recordList',
+            component: './Record/TableList',
           },
         ],
       },
       // forms
-      {
-        path: '/form',
-        icon: 'form',
-        name: 'form',
-        routes: [
-          {
-            path: '/form/basic-form',
-            name: 'basicform',
-            component: './Forms/BasicForm',
-          },
-        ],
-      },
+      // {
+      //   path: '/form',
+      //   icon: 'form',
+      //   name: 'form',
+      //   routes: [
+      //     {
+      //       path: '/form/basic-form',
+      //       name: 'basicform',
+      //       component: './Forms/BasicForm',
+      //     },
+      //   ],
+      // },
       // leave
       {
         path: '/leave',
@@ -70,49 +70,49 @@ export default [
           },
         ],
       },
-      {
-        name: 'result',
-        icon: 'check-circle-o',
-        path: '/result',
-        routes: [
-          // result
-          {
-            path: '/result/success',
-            name: 'success',
-            component: './Result/Success',
-          },
-          { path: '/result/fail', name: 'fail', component: './Result/Error' },
-        ],
-      },
-      {
-        name: 'exception',
-        icon: 'warning',
-        path: '/exception',
-        routes: [
-          // exception
-          {
-            path: '/exception/403',
-            name: 'not-permission',
-            component: './Exception/403',
-          },
-          {
-            path: '/exception/404',
-            name: 'not-find',
-            component: './Exception/404',
-          },
-          {
-            path: '/exception/500',
-            name: 'server-error',
-            component: './Exception/500',
-          },
-          {
-            path: '/exception/trigger',
-            name: 'trigger',
-            hideInMenu: true,
-            component: './Exception/TriggerException',
-          },
-        ],
-      },
+      // {
+      //   name: 'result',
+      //   icon: 'check-circle-o',
+      //   path: '/result',
+      //   routes: [
+      //     // result
+      //     {
+      //       path: '/result/success',
+      //       name: 'success',
+      //       component: './Result/Success',
+      //     },
+      //     { path: '/result/fail', name: 'fail', component: './Result/Error' },
+      //   ],
+      // },
+      // {
+      //   name: 'exception',
+      //   icon: 'warning',
+      //   path: '/exception',
+      //   routes: [
+      //     // exception
+      //     {
+      //       path: '/exception/403',
+      //       name: 'not-permission',
+      //       component: './Exception/403',
+      //     },
+      //     {
+      //       path: '/exception/404',
+      //       name: 'not-find',
+      //       component: './Exception/404',
+      //     },
+      //     {
+      //       path: '/exception/500',
+      //       name: 'server-error',
+      //       component: './Exception/500',
+      //     },
+      //     {
+      //       path: '/exception/trigger',
+      //       name: 'trigger',
+      //       hideInMenu: true,
+      //       component: './Exception/TriggerException',
+      //     },
+      //   ],
+      // },
     ],
   },
 ];

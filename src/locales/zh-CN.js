@@ -1,4 +1,7 @@
 export default {
+
+  'menu.record': '打卡',
+  'menu.record.recordList': '打卡列表',
   'menu.leave': '请假',
   'menu.leave.leaveList': '请假列表',
   'menu.userManager': '用户',

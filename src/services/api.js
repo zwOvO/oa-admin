@@ -11,6 +11,10 @@ export async function queryActivities() {
   return request('/api/activities');
 }
 
+export async function queryRecord(params) {
+  return request(`${apiUrl}/record/list?${stringify(params)}`);
+}
+
 export async function queryLeave(params) {
   return request(`${apiUrl}/leave/list?${stringify(params)}`);
 }
