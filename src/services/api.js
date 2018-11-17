@@ -15,6 +15,37 @@ export async function queryRecord(params) {
   return request(`${apiUrl}/record/list?${stringify(params)}`);
 }
 
+export async function queryLicense(params) {
+  return request(`${apiUrl}/license?${stringify(params)}`);
+}
+
+export async function addLicense(params) {
+  return request(`${apiUrl}/license`, {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
+export async function updateLicense(params) {
+  return request(`${apiUrl}/license`, {
+    method: 'PUT',
+    body: {
+      ...params,
+    },
+  });
+}
+
+export async function removeLicense(params) {
+  return request(`${apiUrl}/license`, {
+    method: 'DELETE',
+    body: {
+      ...params,
+    },
+  });
+}
+
 export async function queryLeave(params) {
   return request(`${apiUrl}/leave/list?${stringify(params)}`);
 }

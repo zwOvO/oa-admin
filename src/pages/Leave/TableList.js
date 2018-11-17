@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import ExportJsonExcel from 'js-export-excel'
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -10,7 +11,7 @@ import {
   Select,
   Button,
   Modal,
-  Badge,
+  Badge, DatePicker,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -18,11 +19,13 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
+const MonthPicker = DatePicker.MonthPicker;
 const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+const monthFormat = 'YYYY-MM';
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['未审批', '通过', '不通过'];
 const leaveType = ['事假','婚假','丧假','产假','年假','调休','病假'];
@@ -62,18 +65,20 @@ class AuditForm extends PureComponent {
       >
         <div>
           <Row>
+            <Col span={12}>请假标识：</Col>
+            <Col span={12}>{values.id}</Col>
+          </Row>
+          <Row>
             <Col span={12}>用户标识：</Col>
             <Col span={12}>{values.openId}</Col>
           </Row>
           <Row>
+            <Col span={12}>用户姓名：</Col>
+            <Col span={12}>{values.username}</Col>
+          </Row>
+          <Row>
             <Col span={12}>请假类型：</Col>
-            <Col span={12}>{values.leaveType===0?"事假":
-              (values.leaveType===1?"婚假":
-                (values.leaveType===2?"丧假":
-                  (values.leaveType===3?"产假":
-                    (values.leaveType===4?"年假":
-                      (values.leaveType===5?"调休":"病假"
-                      )))))}
+            <Col span={12}>{leaveType[values.leaveType]}
             </Col>
           </Row>
           <Row>
@@ -82,7 +87,7 @@ class AuditForm extends PureComponent {
           </Row>
           <Row>
             <Col span={12}>请假时间：</Col>
-            <Col span={12}>{moment(values.createTime).format('YYYY-MM-DD HH:mm:ss')}</Col>
+            <Col span={12}>{values.createTime}</Col>
           </Row>
           <FormItem key="status" {...this.formLayout} label="请假审批">
             {form.getFieldDecorator('status', {
@@ -117,8 +122,12 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: '用户标识',
+      title: '用户标识（唯一）',
       dataIndex: 'openId',
+    },
+    {
+      title: '用户姓名（可能重复）',
+      dataIndex: 'username',
     },
     {
       title: '请假理由',
@@ -207,6 +216,29 @@ class TableList extends PureComponent {
     });
   };
 
+  handleExportExcel = () => {
+    const { leave } = this.props;
+    console.log(leave.data.list);
+    const list = leave.data.list;
+    list.forEach(
+      (value,i) => {
+        value.leaveType = leaveType[value.leaveType];
+        value.status = status[value.status];
+      }
+    );
+    const option= {
+      fileName : `请假记录`,
+      datas : [{
+        sheetData:leave.data.list,
+        sheetName:'sheet',
+        sheetFilter:['openId','username','leaveType','message','status','createTime'],
+        sheetHeader:['用户标示','用户姓名','请假类型','请假理由','审批状态','请假时间']
+      }],
+    };
+    const toExcel = new ExportJsonExcel(option); // new
+    toExcel.saveExcel(); // 保存
+  };
+
   handleRemove = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
@@ -238,8 +270,9 @@ class TableList extends PureComponent {
       if (err) return;
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        month: fieldsValue.month && fieldsValue.month.valueOf()&&moment(fieldsValue.month).format('YYYY-MM'),
       };
+      console.log(values);
       this.setState({
         formValues: values,
       });
@@ -256,6 +289,82 @@ class TableList extends PureComponent {
       stepFormValues: record || {},
     });
   };
+
+  renderAdvancedForm() {
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
+    return (
+      <Form onSubmit={this.handleSearch} layout="inline">
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} className={styles.myRow}>
+          <Col md={8} sm={24}>
+            <FormItem label="用户标识">
+              {getFieldDecorator('openId')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="用户姓名">
+              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="查询年月">
+              {getFieldDecorator('month')(
+                <MonthPicker style={{ width: '100%' }} placeholder="请输入" format={monthFormat} />
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} className={styles.myRow}>
+          <Col md={8} sm={24}>
+            <FormItem label="请假类型">
+              {getFieldDecorator('leaveType', {
+                initialValue: "-1",
+              })(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="-1">所有</Option>
+                  <Option value="0">事假</Option>
+                  <Option value="1">婚假</Option>
+                  <Option value="2">丧假</Option>
+                  <Option value="3">产假</Option>
+                  <Option value="4">年假</Option>
+                  <Option value="5">调休</Option>
+                  <Option value="6">病假</Option>
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="审批状态">
+              {getFieldDecorator('status',{
+                initialValue: "-1",
+              })(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="-1">所有</Option>
+                  <Option value="0">未审核</Option>
+                  <Option value="1">通过</Option>
+                  <Option value="2">未通过</Option>
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <div style={{ overflow: 'hidden' }}>
+          <div style={{ float: 'right', marginBottom: 24 }}>
+            <Button type="primary" htmlType="submit">
+              查询
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              重置
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleExportExcel}>
+              导出Excel
+            </Button>
+          </div>
+        </div>
+      </Form>
+    );
+  }
 
   handleAudit = (rowData,form) => {
     const { dispatch } = this.props;
@@ -291,6 +400,7 @@ class TableList extends PureComponent {
     return (
       <PageHeaderWrapper title="请假列表">
         <Card bordered={false}>
+          <div className={styles.tableListForm}>{this.renderAdvancedForm()}</div>
           <div className={styles.tableList}>
             <StandardTable
               selectedRows={selectedRows}
@@ -298,7 +408,6 @@ class TableList extends PureComponent {
               data={data}
               rowKey="id"
               columns={this.columns}
-              onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
           </div>

@@ -1,8 +1,8 @@
-import { queryLeave, removeLeave, addLeave, updateLeave } from '@/services/api';
+import { queryLicense, removeLicense, addLicense, updateLicense } from '@/services/api';
 import moment from "moment";
 
 export default {
-  namespace: 'leave',
+  namespace: 'license',
 
   state: {
     data: {
@@ -13,33 +13,35 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryLeave, payload);
+      const response = yield call(queryLicense, payload);
       yield put({
-        type: 'queryLeaveReduce',
+        type: 'queryLicenseReduce',
         payload: response,
       });
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addLeave, payload);
+      yield call(addLicense, payload);
+      const response = yield call(queryLicense, payload);
       yield put({
-        type: 'save',
+        type: 'queryLicenseReduce',
         payload: response,
       });
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeLeave, payload);
+      yield call(removeLicense, payload);
+      const response = yield call(queryLicense, payload);
       yield put({
-        type: 'save',
+        type: 'queryLicenseReduce',
         payload: response,
       });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      yield call(updateLeave, payload);
-      const response = yield call(queryLeave, {});
+      yield call(updateLicense, payload);
+      const response = yield call(queryLicense, {});
       yield put({
-        type: 'queryLeaveReduce',
+        type: 'queryLicenseReduce',
         payload: response,
       });
       if (callback) callback();
@@ -47,7 +49,7 @@ export default {
   },
 
   reducers: {
-    queryLeaveReduce(state, action) {
+    queryLicenseReduce(state, action) {
       console.log(action.payload);
       const list = action.payload.result;
       list.forEach(

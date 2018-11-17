@@ -44,6 +44,19 @@ export default [
       //     },
       //   ],
       // },
+      // license
+      {
+        path: '/license',
+        icon: 'table',
+        name: 'license',
+        routes: [
+          {
+            path: '/license/table-list',
+            name: 'licenseList',
+            component: './License/TableList',
+          },
+        ],
+      },
       // leave
       {
         path: '/leave',
