@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-const apiUrl = "http://localhost:21019/api/v1";
+const apiUrl = "http://zwovo.club:8080/oa-web";
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');

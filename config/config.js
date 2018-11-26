@@ -8,6 +8,7 @@ export default {
   // add for transfer to umi
   base: '/oa/',
   publicPath: 'http://www.zwovo.club:81/oa/',
+  history: 'hash',
   plugins: [
     [
       'umi-plugin-react',
