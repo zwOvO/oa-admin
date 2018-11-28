@@ -1,6 +1,7 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
+// const apiUrl = "http://192.168.31.235:8080/oa-web";
 const apiUrl = "http://zwovo.club:8080/oa-web";
 
 export async function queryProjectNotice() {
@@ -66,11 +67,10 @@ export async function queryUserManager(params) {
 }
 
 export async function updateUserManager(params) {
-  return request('/api/leave', {
-    method: 'POST',
+  return request(`${apiUrl}/user/${params.openId}`, {
+    method: 'PUT',
     body: {
       ...params,
-      method: 'update',
     },
   });
 }

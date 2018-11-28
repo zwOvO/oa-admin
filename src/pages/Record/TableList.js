@@ -21,6 +21,7 @@ import styles from './TableList.less';
 
 const FormItem = Form.Item;
 const MonthPicker = DatePicker.MonthPicker;
+
 const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)

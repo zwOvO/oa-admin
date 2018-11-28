@@ -1,4 +1,5 @@
-import { queryUserManager, updateUserManager } from '@/services/api';
+import { queryUserManager,updateUserManager } from '@/services/api';
+import moment from "moment";
 
 export default {
   namespace: 'userManager',
@@ -19,17 +20,19 @@ export default {
       });
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeUserManager, payload);
+      yield call(removeUserManager, payload);
+      const response = yield call(queryUserManager);
       yield put({
-        type: 'save',
+        type: 'queryReduce',
         payload: response,
       });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateUserManager, payload);
+      yield call(updateUserManager, payload);
+      const response = yield call(queryUserManager);
       yield put({
-        type: 'save',
+        type: 'queryReduce',
         payload: response,
       });
       if (callback) callback();
@@ -38,7 +41,18 @@ export default {
 
   reducers: {
     queryReduce(state, action) {
-      console.log(action.payload);
+      const gender = ['男', '女'];
+      const status = ['启用', '禁用'];
+      const list = action.payload.result;
+      list.forEach(
+        (value,i) => {
+          console.log(value.gender-1);
+          value.gender = gender[(value.gender-1)];
+          value.status = status[(value.status-1)];
+          value.createTime = moment(value.createTime).format('YYYY-MM-DD HH:mm:ss');
+          console.log(`forEach遍历:${i}--${value.createTime}`);
+        }
+      );
       return {
         ...state,
         data: {
