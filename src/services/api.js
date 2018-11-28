@@ -1,8 +1,8 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-const apiUrl = "http://192.168.43.64:8080/oa-web";
-// const apiUrl = "http://zwovo.club:8080/oa-web";
+// const apiUrl = "http://192.168.43.64:8080/oa-web";
+const apiUrl = "http://zwovo.club:8080/oa-web";
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
