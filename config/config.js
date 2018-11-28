@@ -7,7 +7,7 @@ import defaultSettings from '../src/defaultSettings';
 export default {
   // add for transfer to umi
   base: '/oa/',
-  publicPath: 'http://www.zwovo.club/oa/',
+  publicPath: 'http://www.zwovo.club:80/oa/',
   history: 'hash',
   plugins: [
     [
