@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 // const apiUrl = "http://192.168.43.64:8080/oa-web";
-const apiUrl = "https://zwovo.club:8080/oa-web";
+const apiUrl = "https://www.zwovo.club/oa-web";
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
