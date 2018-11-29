@@ -14,7 +14,13 @@ const FooterView = () => (
           blankTarget: true,
         },
         {
-          key: 'github',
+          key: 'OA - github',
+          title: 'OA项目 首页',
+          href: 'https://github.com/zwOvO',
+          blankTarget: true,
+        },
+        {
+          key: 'Ant Design - github',
           title: <Icon type="github" />,
           href: 'https://github.com/ant-design/ant-design-pro',
           blankTarget: true,
@@ -29,7 +35,7 @@ const FooterView = () => (
       copyright={
         <Fragment>
           Copyright <Icon type="copyright" /> 2018 蚂蚁金服体验技术部出品
-          PriductBy 【2019 FJUT CS1701毕业设计】
+          【2019 FJUT CS1701毕业设计】
         </Fragment>
       }
     />
