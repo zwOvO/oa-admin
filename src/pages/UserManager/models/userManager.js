@@ -29,13 +29,13 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      yield call(updateUserManager, payload);
+      const res = yield call(updateUserManager, payload);
+      if (callback) callback(res);
       const response = yield call(queryUserManager);
       yield put({
         type: 'queryReduce',
         payload: response,
       });
-      if (callback) callback();
     },
   },
 
@@ -46,11 +46,9 @@ export default {
       const list = action.payload.result;
       list.forEach(
         (value,i) => {
-          console.log(value.gender-1);
           value.gender = gender[(value.gender-1)];
           value.status = status[(value.status-1)];
           value.createTime = moment(value.createTime).format('YYYY-MM-DD HH:mm:ss');
-          console.log(`forEach遍历:${i}--${value.createTime}`);
         }
       );
       return {

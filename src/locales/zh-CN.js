@@ -2,6 +2,7 @@ export default {
 
   'menu.record': '打卡管理',
   'menu.record.recordList': '打卡列表',
+  'menu.record.monthRecord': '月打卡列表',
   'menu.leave': '请假管理',
   'menu.leave.leaveList': '请假列表',
   'menu.license': '授权码管理',

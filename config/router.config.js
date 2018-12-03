@@ -29,6 +29,11 @@ export default [
             name: 'recordList',
             component: './Record/TableList',
           },
+          {
+            path: '/record/monthRecord',
+            name: 'monthRecord',
+            component: './Record/MonthRecord',
+          },
         ],
       },
       // forms

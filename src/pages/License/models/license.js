@@ -21,7 +21,7 @@ export default {
     },
     *add({ payload, callback }, { call, put }) {
       yield call(addLicense, payload);
-      const response = yield call(queryLicense, payload);
+      const response = yield call(queryLicense, {});
       yield put({
         type: 'queryLicenseReduce',
         payload: response,
@@ -29,13 +29,13 @@ export default {
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
-      yield call(removeLicense, payload);
-      const response = yield call(queryLicense, payload);
+      const res = yield call(removeLicense, payload);
+      if (callback) callback(JSON.parse(res));
+      const response = yield call(queryLicense, {});
       yield put({
         type: 'queryLicenseReduce',
         payload: response,
       });
-      if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
       yield call(updateLicense, payload);
@@ -50,12 +50,10 @@ export default {
 
   reducers: {
     queryLicenseReduce(state, action) {
-      console.log(action.payload);
       const list = action.payload.result;
       list.forEach(
         (value,i) => {
           value.createTime = moment(value.createTime).format('YYYY-MM-DD HH:mm:ss');
-          console.log(`forEach遍历:${i}--${value.createTime}`);
         }
       );
       return {

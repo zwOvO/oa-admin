@@ -10,7 +10,7 @@ import {
   Select,
   Button,
   Modal,
-  Badge,
+  Badge, message,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -192,7 +192,13 @@ class TableList extends PureComponent {
       payload: {
         key: selectedRows.map(row => row.license),
       },
-      callback: () => {
+      callback: (res) => {
+        console.log(res);
+        if(res.status === 200){
+          message.success('删除成功');
+        }else{
+          message.error('删除失败');
+        }
         this.setState({
           selectedRows: [],
         });
