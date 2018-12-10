@@ -38,7 +38,7 @@ export default {
     },
     *update({ callback,payload }, { call, put }) {
       const res = yield call(updateMonthRecord, payload);
-      if (callback) callback(JSON.parse(res));
+      if (callback) callback(res);
       const response = yield call(queryMonthRecord, {});
       yield put({
         type: 'queryReduce',

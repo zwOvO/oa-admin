@@ -12,6 +12,7 @@ import {
   message,
   Avatar, Input, Button, DatePicker, Select
 } from 'antd';
+import { Pie, yuan } from '@/components/Charts';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { downloadMonthRecordExcelUrl,uploadMonthRecordExcelUrl } from '@/services/api';
@@ -43,10 +44,24 @@ class UpdateForm extends PureComponent {
 
   render() {
     const { updateModalVisible, handleUpdateModalVisible ,handleFormReset,handleFormSubmit ,values,form } = this.props;
-
     const {
       form: { getFieldDecorator },
     } = this.props;
+
+    const salesPieData = [
+      {
+        x: '实到',
+        y: values.truedNum,
+      },
+      {
+        x: '请假',
+        y: values.leaveNum,
+      },
+      {
+        x: '缺勤',
+        y: values.absenceNum,
+      },
+    ];
     return (
       <Modal
         width={640}
@@ -60,54 +75,93 @@ class UpdateForm extends PureComponent {
         <div>
 
           <Form>
-            <FormItem label="月打卡标识" {...this.formLayout}>
-              {getFieldDecorator('id', {
-                rules: [{ required: true, message: '请输入月打卡标识' }],
-                initialValue: values.id,
-              })(<Input placeholder="请输入" disabled />)}
-            </FormItem>
-            <FormItem label="用户标识" {...this.formLayout}>
-              {getFieldDecorator('openId', {
-                rules: [{ required: true, message: '请输入用户标识' }],
-                initialValue: values.openId,
-              })(<Input placeholder="请输入" disabled />)}
-            </FormItem>
-            <FormItem label="用户姓名" {...this.formLayout}>
-              {getFieldDecorator('userName', {
-                rules: [{ required: true, message: '请输入用户姓名' }],
-                initialValue: values.userName,
-              })(<Input placeholder="请输入" disabled />)}
-            </FormItem>
-            <FormItem label="应到天数" {...this.formLayout}>
-              {getFieldDecorator('shouldNum', {
-                rules: [{ required: true, message: '请输入应到天数' }],
-                initialValue: values.shouldNum,
-              })(<Input placeholder="请输入" />)}
-            </FormItem>
-            <FormItem label="实到天数" {...this.formLayout}>
-              {getFieldDecorator('truedNum', {
-                rules: [{ required: true, message: '请输入实到天数' }],
-                initialValue: values.truedNum,
-              })(<Input placeholder="请输入" />)}
-            </FormItem>
-            <FormItem label="请假天数" {...this.formLayout}>
-              {getFieldDecorator('leaveNum', {
-                rules: [{ required: true, message: '请输入请假天数' }],
-                initialValue: values.leaveNum,
-              })(<Input placeholder="请输入" />)}
-            </FormItem>
-            <FormItem label="缺勤天数" {...this.formLayout}>
-              {getFieldDecorator('absenceNum', {
-                rules: [{ required: true, message: '请输入缺勤天数' }],
-                initialValue: values.absenceNum,
-              })(<Input placeholder="请输入" />)}
-            </FormItem>
-            <FormItem label="考勤年月" {...this.formLayout}>
-              {getFieldDecorator('forDate', {
-                rules: [{ required: true, message: '请输入考勤年月' }],
-              })(<MonthPicker style={{ width: '100%' }} format="YYYY-MM" />)}
-            </FormItem>
+            <Row>
+              <Col span={12}>
+                <FormItem label="月打卡标识" {...this.formLayout}>
+                  {getFieldDecorator('id', {
+                    rules: [{ required: true, message: '请输入月打卡标识' }],
+                    initialValue: values.id,
+                  })(<Input placeholder="请输入" disabled />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="用户标识" {...this.formLayout}>
+                  {getFieldDecorator('openId', {
+                    rules: [{ required: true, message: '请输入用户标识' }],
+                    initialValue: values.openId,
+                  })(<Input placeholder="请输入" disabled />)}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <FormItem label="用户姓名" {...this.formLayout}>
+                  {getFieldDecorator('userName', {
+                    rules: [{ required: true, message: '请输入用户姓名' }],
+                    initialValue: values.userName,
+                  })(<Input placeholder="请输入" disabled />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="考勤年月" {...this.formLayout}>
+                  {getFieldDecorator('forDate', {
+                    rules: [{ required: true, message: '请输入考勤年月' }],
+                  })(<MonthPicker style={{ width: '100%' }} format="YYYY-MM" />)}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <FormItem label="应到天数" {...this.formLayout}>
+                  {getFieldDecorator('shouldNum', {
+                    rules: [{ required: true, message: '请输入应到天数' }],
+                    initialValue: values.shouldNum,
+                  })(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="实到天数" {...this.formLayout}>
+                  {getFieldDecorator('truedNum', {
+                    rules: [{ required: true, message: '请输入实到天数' }],
+                    initialValue: values.truedNum,
+                  })(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <FormItem label="请假天数" {...this.formLayout}>
+                  {getFieldDecorator('leaveNum', {
+                    rules: [{ required: true, message: '请输入请假天数' }],
+                    initialValue: values.leaveNum,
+                  })(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem label="缺勤天数" {...this.formLayout}>
+                  {getFieldDecorator('absenceNum', {
+                    rules: [{ required: true, message: '请输入缺勤天数' }],
+                    initialValue: values.absenceNum,
+                  })(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+            </Row>
           </Form>
+          <Pie
+            hasLegend
+            title="出勤情况"
+            subTitle="天数"
+            total={() => (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: salesPieData.reduce((pre, now) => now.y + pre, 0)
+                }}
+              />
+            )}
+            data={salesPieData}
+            valueFormat={val => <span dangerouslySetInnerHTML={{ __html: val + '天' }} />}
+            height={294}
+          />
         </div>
       </Modal>
     );
