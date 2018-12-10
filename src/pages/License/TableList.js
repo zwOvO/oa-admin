@@ -53,7 +53,7 @@ class AuditForm extends PureComponent {
         title="授权码信息"
         visible={auditModalVisible}
         onCancel={() => handleUpdateModalVisible()}
-        // onOk={() => handleAudit(values,form)}
+        onOk={() => handleUpdateModalVisible()}
       >
         <div>
           <Row>
