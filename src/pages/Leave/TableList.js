@@ -173,8 +173,13 @@ class TableList extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    const params = {
+      leaveType:-1,
+      status:-1,
+    };
     dispatch({
       type: 'leave/fetch',
+      payload: params,
     });
   }
 
