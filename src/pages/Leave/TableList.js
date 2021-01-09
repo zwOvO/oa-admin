@@ -1,18 +1,8 @@
 import React, { PureComponent, Fragment } from 'react';
-import ExportJsonExcel from 'js-export-excel'
+import ExportJsonExcel from 'js-export-excel';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Button,
-  Modal,
-  Badge, DatePicker,
-} from 'antd';
+import { Row, Col, Card, Form, Input, Select, Button, Modal, Badge, DatePicker } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
@@ -28,7 +18,7 @@ const getValue = obj =>
 const monthFormat = 'YYYY-MM';
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['未审批', '通过', '不通过'];
-const leaveType = ['事假','婚假','丧假','产假','年假','调休','病假'];
+const leaveType = ['事假', '婚假', '丧假', '产假', '年假', '调休', '病假'];
 
 @Form.create()
 class AuditForm extends PureComponent {
@@ -61,7 +51,7 @@ class AuditForm extends PureComponent {
         title="请假审批"
         visible={auditModalVisible}
         onCancel={() => handleUpdateModalVisible()}
-        onOk={() => handleAudit(values,form)}
+        onOk={() => handleAudit(values, form)}
       >
         <div>
           <Row>
@@ -78,15 +68,22 @@ class AuditForm extends PureComponent {
           </Row>
           <Row>
             <Col span={12}>请假类型：</Col>
-            <Col span={12}>{leaveType[values.leaveType]}
-            </Col>
+            <Col span={12}>{leaveType[values.leaveType]}</Col>
           </Row>
           <Row>
             <Col span={12}>请假理由：</Col>
             <Col span={12}>{values.message}</Col>
           </Row>
           <Row>
-            <Col span={12}>请假时间：</Col>
+            <Col span={12}>请假开始时间：</Col>
+            <Col span={12}>{values.startTime}</Col>
+          </Row>
+          <Row>
+            <Col span={12}>请假结束时间：</Col>
+            <Col span={12}>{values.stopTime}</Col>
+          </Row>
+          <Row>
+            <Col span={12}>请假申请时间：</Col>
             <Col span={12}>{values.createTime}</Col>
           </Row>
           <FormItem key="status" {...this.formLayout} label="请假审批">
@@ -99,7 +96,8 @@ class AuditForm extends PureComponent {
                 <Option value="2">不通过</Option>
               </Select>
             )}
-          </FormItem>,
+          </FormItem>
+          ,
         </div>
       </Modal>
     );
@@ -174,8 +172,8 @@ class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     const params = {
-      leaveType:-1,
-      status:-1,
+      leaveType: -1,
+      status: -1,
     };
     dispatch({
       type: 'leave/fetch',
@@ -225,20 +223,20 @@ class TableList extends PureComponent {
     const { leave } = this.props;
     console.log(leave.data.list);
     const list = leave.data.list;
-    list.forEach(
-      (value,i) => {
-        value.leaveType = leaveType[value.leaveType];
-        value.status = status[value.status];
-      }
-    );
-    const option= {
-      fileName : `请假记录`,
-      datas : [{
-        sheetData:leave.data.list,
-        sheetName:'sheet',
-        sheetFilter:['openId','username','leaveType','message','status','createTime'],
-        sheetHeader:['用户标示','用户姓名','请假类型','请假理由','审批状态','请假时间']
-      }],
+    list.forEach((value, i) => {
+      value.leaveType = leaveType[value.leaveType];
+      value.status = status[value.status];
+    });
+    const option = {
+      fileName: `请假记录`,
+      datas: [
+        {
+          sheetData: leave.data.list,
+          sheetName: 'sheet',
+          sheetFilter: ['openId', 'username', 'leaveType', 'message', 'status', 'createTime'],
+          sheetHeader: ['用户标示', '用户姓名', '请假类型', '请假理由', '审批状态', '请假时间'],
+        },
+      ],
     };
     const toExcel = new ExportJsonExcel(option); // new
     toExcel.saveExcel(); // 保存
@@ -275,7 +273,10 @@ class TableList extends PureComponent {
       if (err) return;
       const values = {
         ...fieldsValue,
-        month: fieldsValue.month && fieldsValue.month.valueOf()&&moment(fieldsValue.month).format('YYYY-MM'),
+        month:
+          fieldsValue.month &&
+          fieldsValue.month.valueOf() &&
+          moment(fieldsValue.month).format('YYYY-MM'),
       };
       console.log(values);
       this.setState({
@@ -324,7 +325,7 @@ class TableList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="请假类型">
               {getFieldDecorator('leaveType', {
-                initialValue: "-1",
+                initialValue: '-1',
               })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="-1">所有</Option>
@@ -341,8 +342,8 @@ class TableList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="审批状态">
-              {getFieldDecorator('status',{
-                initialValue: "-1",
+              {getFieldDecorator('status', {
+                initialValue: '-1',
               })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="-1">所有</Option>
@@ -371,7 +372,7 @@ class TableList extends PureComponent {
     );
   }
 
-  handleAudit = (rowData,form) => {
+  handleAudit = (rowData, form) => {
     const { dispatch } = this.props;
     const that = this;
     form.validateFields((err, values) => {
@@ -381,14 +382,14 @@ class TableList extends PureComponent {
         dispatch({
           type: 'leave/update',
           payload: {
-            id:rowData.id,
-            status:values.status,
+            id: rowData.id,
+            status: values.status,
           },
-          callback:()=>{
+          callback: () => {
             that.setState({
-              auditModalVisible:false,
+              auditModalVisible: false,
             });
-          }
+          },
         });
       }
     });
@@ -417,17 +418,14 @@ class TableList extends PureComponent {
             />
           </div>
         </Card>
-        {
-          stepFormValues && Object.keys(stepFormValues).length ? (
-            <AuditForm
-              handleUpdateModalVisible={this.handleUpdateModalVisible}
-              handleAudit={this.handleAudit}
-              auditModalVisible={auditModalVisible}
-              values={stepFormValues}
-            />
-          ) : null
-        }
-
+        {stepFormValues && Object.keys(stepFormValues).length ? (
+          <AuditForm
+            handleUpdateModalVisible={this.handleUpdateModalVisible}
+            handleAudit={this.handleAudit}
+            auditModalVisible={auditModalVisible}
+            values={stepFormValues}
+          />
+        ) : null}
       </PageHeaderWrapper>
     );
   }

@@ -1,9 +1,9 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-// const apiUrl = "http://192.168.31.235:8080/oa-web";
-// const apiUrl = "http://192.168.43.64:8080/oa-web";
-const apiUrl = "https://www.zwovo.club/oa-web";
+// const apiUrl = "http://192.168.31.235:8080/oa_web";
+// const apiUrl = "http://192.168.43.64:8080/oa_web";
+const apiUrl = 'http://localhost:8080/oa_web';
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -22,7 +22,7 @@ export async function queryMonthRecord(params) {
 }
 
 export async function updateMonthRecord(params) {
-  return request(`${apiUrl}/monthRecord`,{
+  return request(`${apiUrl}/monthRecord`, {
     method: 'PUT',
     body: {
       ...params,
@@ -34,7 +34,7 @@ export const downloadMonthRecordExcelUrl = `${apiUrl}/monthRecord/excel`;
 export const uploadMonthRecordExcelUrl = `${apiUrl}/monthRecord/excel`;
 
 export async function uploadMonthRecordByExcel(params) {
-  return request(`${apiUrl}/monthRecord/excel`,{
+  return request(`${apiUrl}/monthRecord/excel`, {
     method: 'POST',
     body: {
       ...params,
@@ -43,7 +43,7 @@ export async function uploadMonthRecordByExcel(params) {
 }
 
 export async function addMonthRecord(params) {
-  return request(`${apiUrl}/monthRecord`,{
+  return request(`${apiUrl}/monthRecord`, {
     method: 'POST',
     body: {
       ...params,
@@ -52,7 +52,7 @@ export async function addMonthRecord(params) {
 }
 
 export async function removeMonthRecord(params) {
-  return request(`${apiUrl}/monthRecord`,{
+  return request(`${apiUrl}/monthRecord`, {
     method: 'DELETE',
     body: {
       ...params,
@@ -96,7 +96,7 @@ export async function queryLeave(params) {
 }
 
 export async function updateLeave(params) {
-  console.log("params:");
+  console.log('params:');
   console.log(params);
   return request(`${apiUrl}/leave/audit`, {
     method: 'PUT',
